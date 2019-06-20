@@ -2,34 +2,32 @@ import manager
 import testmodule
 
 
-# legibility, although these should probably be converted to objects in some way (see testmodule.py)
-divider = testmodule.divide_event
-get2 = testmodule.two_event
-get4 = testmodule.four_event
-printer = testmodule.print_event
-
 # Create manager instance
 manager = manager.Manager()
 
-# Start with provider events
+# Register module with manager
+manager.register_module(testmodule.METADATA)
+
+# Create step, and add events Give Two and Give Four to step
 manager.add_step("get_numbers")
-# Add get2 and get4 to the get_numbers step
-manager.add_event(get2, "get_numbers")
-manager.add_event(get4, "get_numbers")
+manager.add_event(manager.events["Test Module"]["Give Two"], "get_numbers")
+manager.add_event(manager.events["Test Module"]["Give Four"], "get_numbers")
 
-# Divide the numbers seen before
-manager.add_step("do_divide")
-manager.add_event(divider, "do_divide")
-# Set "four" from the last event to "dividend" in this event
-divider.set_translation("four", "dividend")
-# Set "two" from the last event to "divisor" in this event
-divider.set_translation("two", "divisor")
+# Add step divide
+manager.add_step("divide")
+# Add to step divide:
+#   use "four" from last outputs as "dividend" for this inputs
+#   use "two" from last outputs as "divisor" for this inputs
+manager.add_translation("divide", "four", "dividend")
+manager.add_translation("divide", "two", "divisor")
+# Add event Divide from Test Module to divide step
+manager.add_event(manager.events["Test Module"]["Divide"], "divide")
 
-# End with export event
-manager.add_step("print")
-manager.add_event(printer, "print")
-# Set "quotient" from the last event to "printable" in this event
-printer.set_translation("quotient", "printable")
+# Add step "print time" and add Printer event to it
+manager.add_step("print time")
+# Use "quotient" from last outputs as "printable" for this inputs
+manager.add_translation("print time", "quotient", "printable")
+manager.add_event(manager.events["Test Module"]["Printer"], "print time")
 
-# Run sequence
+# Run events
 manager.run()
