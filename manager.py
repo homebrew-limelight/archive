@@ -45,8 +45,9 @@ class Step:
     def get_inputs(self):
         inputs = []
         for event in self.events:
-            for event_input in event.inputs:
-                inputs.append(event_input)
+            if not event.is_provider():
+                for event_input in event.inputs:
+                    inputs.append(event_input)
         return inputs
 
     # Allows the linkage of the previous event's output to this event's input
