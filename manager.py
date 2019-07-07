@@ -4,6 +4,7 @@ from function import Function
 
 
 def fullname(cls: type) -> str:
+
     module = cls.__class__.__module__
     if module is None or module == str.__class__.__module__:
         return cls.__qualname__
