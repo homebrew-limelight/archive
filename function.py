@@ -1,14 +1,22 @@
 from abc import ABC, abstractmethod
-from dataclasses import is_dataclass, fields
-from typing import Iterable, FrozenSet
+from builtins import issubclass
+from dataclasses import is_dataclass, dataclass, fields
+from typing import Iterable, FrozenSet, get_type_hints
+
+import pydantic
+from pydantic import BaseModel
 
 
-def is_pydantic_dataclass(cls):
-    return is_dataclass(cls) and hasattr(cls, "__pydantic_model__")
+def is_basemodel(cls):
+    return issubclass(cls, BaseModel)
 
 
-def does_match(cls, name, asserter):
-    item = getattr(cls, name, None)
+def does_match(cls, name, asserter, ignore_typeerorr: bool = True):
+    if ignore_typeerorr:
+        item = getattr(cls, name, None)
+    else:
+        item = getattr(cls, name, None)
+
     return asserter(item)
 
 
@@ -16,44 +24,61 @@ class Function(ABC):
     has_sideeffect: bool
     require_restart: FrozenSet[str]
 
-    def __init_subclass__(cls, require_restart: Iterable[str] = None, verify_restart: bool = False, has_sideeffect: bool = False, **kwargs):
-        super().__init_subclass__(**kwargs)
+    @pydantic.dataclasses.dataclass()
+    class Settings(BaseModel):
+        pass
 
-        if not does_match(cls, "Settings", is_pydantic_dataclass):
-            raise TypeError(f"Class {cls.__name__} must have a pydantic dataclass 'Settings'")
+    @dataclass
+    class Inputs:
+        pass
 
-        if not does_match(cls, "Inputs", is_dataclass):
-            raise TypeError(f"Class {cls.__name__} must have a dataclass 'Inputs'")
+    @dataclass
+    class Outputs:
+        pass
 
-        if not does_match(cls, "Outputs", is_dataclass):
-            raise TypeError(f"Class {cls.__name__} must have a dataclass 'Outputs'")
+    def __init_subclass__(cls, *args, **kwargs):
+        def error(msg):
+            raise TypeError(f"Function {cls.__name__} must have a {msg}")
 
-        if hasattr(cls, "require_restart"):
-            raise TypeError(f"Class {cls.__name__} must not define 'require_restart'")
+        try:
+            if not does_match(cls, "Settings", is_basemodel):
+                error("pydantic dataclass 'Settings'")
+        except AttributeError:
+            cls.Settings = Function.Settings
 
-        if hasattr(cls, "has_sideeffect"):
-            raise TypeError(f"Class {cls.__name__} must not define 'has_sideeffect'")
+        try:
+            if not does_match(cls, "Inputs", is_dataclass):
+                error("dataclass 'Inputs'")
+        except AttributeError:
+            cls.Inputs = Function.Inputs
 
-        cls.has_sideeffect = has_sideeffect
-        cls.require_restart = frozenset() if require_restart is None else frozenset(require_restart)
+        try:
+            if not does_match(cls, "Outputs", is_dataclass):
+                error("dataclass 'Outputs'")
+        except AttributeError:
+            cls.Outputs = Function.Outputs
 
-        if verify_restart:
-            for field in cls.require_restart:
-                if field not in fields(cls.Settings):
-                    raise TypeError(f"Class {cls.__name__}.Settings must have a field '{field}'")
+        if not does_match(cls, "has_sideeffect", lambda x: isinstance(x, bool), ignore_typeerorr=False):
+            error("bool property 'has_sideeffect'")
 
-        # TODO: TypeError for typos iun require_restart
+        if not hasattr(cls, "require_restart"):
+            error("property 'require_restart'")
+
+        cls.require_restart = frozenset(cls.require_restart)
+
+        setting_names = [x.name for x in fields(cls.Settings)]
+
+        for field in setting_names:
+            if field not in cls.Settings:
+                error(f"field '{field}'")
 
     def __init__(self, settings):
         self.settings = settings
 
-    def __call__(self, inputs, settings=None):
-        if settings:
-            self.settings = settings
-
-        return self.process(inputs)
-
     @abstractmethod
-    def process(self, inputs):
+    def __call__(self, inputs):
         raise NotImplementedError
+
+    def dispose(self):
+        pass
 

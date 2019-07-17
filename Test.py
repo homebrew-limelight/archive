@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from pydantic.dataclasses import dataclass as pydataclass
 from function import Function
-from manager import Manager, Pipeline, fullname
+from litegraph import LiteGraph, LiteGraphPipeline
+from litegraph_example import BASIC_SUM
+from manager import Manager
 
 
-class Box(Function):
-    @pydataclass
-    class Settings:
-        pass
+class Five(Function):
+    has_sideeffect = False
+    require_restart = frozenset()
 
     @dataclass
     class Inputs:
@@ -15,40 +15,63 @@ class Box(Function):
 
     @dataclass
     class Outputs:
-        A: int
+        five: int
 
-    def process(self, inputs):
-        print("A")
-        return Box.Outputs(5)
+    def __call__(self, inputs):
+        return self.Outputs(five=5)
 
 
-class BBox(Function):
-    @pydataclass
-    class Settings:
-        pass
+class Sum(Function):
+    has_sideeffect = False
+    require_restart = frozenset()
 
     @dataclass
     class Inputs:
-        B: int
-        pass
+        num1: int
+        num2: int
+
+    @dataclass
+    class Outputs:
+        out: int
+
+    def __call__(self, inputs):
+        out = inputs.num1 + inputs.num2
+
+        return self.Outputs(out=out)
+
+
+class Print(Function):
+    has_sideeffect = True
+    require_restart = frozenset()
+
+    @dataclass
+    class Inputs:
+        val: int
 
     @dataclass
     class Outputs:
         pass
 
-    def process(self, inputs):
-        print(inputs.B)
-        pass
+    def __call__(self, inputs):
+        print(f"Print node: {inputs.val}")
+
+        return self.Outputs()
 
 
 m = Manager()
-m.register(Box)
-m.register(BBox)
+m.register(Five, Sum, Print)
 
-p = Pipeline(m)
-b = p.create_node(fullname(Box), Box.Settings)
-c = p.create_node(fullname(BBox), Box.Settings)
+# p = Pipeline(m)
+# b = p.create_node_raw(fullname(Box), Box.Settings)
+# c = p.create_node_raw(fullname(BBox), Box.Settings)
+# d = p.create_node_raw(fullname(BBox), Box.Settings)
+#
+# p.connect_node(b, c, {"A": "B"})
+# p.connect_node(b, d, {"A": "B"})
+#
+# p.run_pipeline()
 
-p.connect_node(b, c, {"A": "B"})
+a = LiteGraph.make(BASIC_SUM)
+b = LiteGraphPipeline.from_litegraph(m, a)
 
-p.run_pipeline()
+b.run_pipeline()
