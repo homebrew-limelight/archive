@@ -1,6 +1,6 @@
 import uuid
 from itertools import chain
-from typing import Dict, Set, List, Mapping
+from typing import Dict, Set, List, Mapping, Any
 
 from toposort import toposort
 
@@ -14,7 +14,7 @@ class Pipeline:
         self.adjList: Dict[Node, Set[Node]] = {}
         self.run_order: List[Node] = []
 
-    def create_node(self, qual_name: str, obj) -> uuid:
+    def create_node(self, qual_name: str, obj: Dict[str, Any]) -> uuid:
         settings = self.manager.make_settings(qual_name, obj)
         return self.create_node_raw(qual_name, settings)
 

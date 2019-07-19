@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import fields, dataclass
-from typing import Dict, Type, Set, Iterable, Mapping
+from typing import Dict, Type, Set, Iterable, Mapping, Any
 from function import Function
 
 
@@ -51,8 +51,8 @@ class Manager:
         for cls in clses:
             self.idDict[fullname(cls)] = cls
 
-    def make_settings(self, name: str, obj):
-        return self.idDict[name].Settings.parse_obj(obj)
+    def make_settings(self, name: str, obj: Dict[str, Any]):
+        return self.idDict[name].Settings(**obj)
 
     def create_node(self, name: str, settings) -> Node:
         return Node(self.idDict[name](settings))

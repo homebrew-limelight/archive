@@ -19,8 +19,8 @@ class Blur(Function):
     has_sideeffect = False
     require_restart = frozenset()
 
-    @pydantic.dataclasses.dataclass()
-    class Settings(BaseModel):
+    @dataclass
+    class Settings:
         blurType: BlurType
         value: int
         

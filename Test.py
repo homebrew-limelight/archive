@@ -6,8 +6,10 @@ from manager import Manager
 
 
 class Five(Function):
-    has_sideeffect = False
-    require_restart = frozenset()
+    @dataclass
+    class Settings:
+        i: int
+        pass
 
     @dataclass
     class Inputs:
@@ -22,9 +24,6 @@ class Five(Function):
 
 
 class Sum(Function):
-    has_sideeffect = False
-    require_restart = frozenset()
-
     @dataclass
     class Inputs:
         num1: int
@@ -42,7 +41,6 @@ class Sum(Function):
 
 class Print(Function):
     has_sideeffect = True
-    require_restart = frozenset()
 
     @dataclass
     class Inputs:

@@ -58,7 +58,9 @@ BASIC_SUM = """{
                     ]
                 }
             ],
-            "properties": {}
+            "properties": {
+                "i": 5
+            }
         },
         {
             "id": 2,
@@ -82,7 +84,9 @@ BASIC_SUM = """{
                     ]
                 }
             ],
-            "properties": {}
+            "properties": {
+                "i": 5
+            }
         }
     ],
     "links": [

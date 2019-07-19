@@ -1,15 +1,9 @@
 from abc import ABC, abstractmethod
-from builtins import issubclass
 from dataclasses import is_dataclass, dataclass, fields
-from typing import Iterable, FrozenSet, get_type_hints
+from typing import FrozenSet
 
 import pydantic
 from pydantic import BaseModel
-
-
-def is_basemodel(cls):
-    return issubclass(cls, BaseModel)
-
 
 def does_match(cls, name, asserter, ignore_typeerorr: bool = True):
     if ignore_typeerorr:
@@ -21,8 +15,8 @@ def does_match(cls, name, asserter, ignore_typeerorr: bool = True):
 
 
 class Function(ABC):
-    has_sideeffect: bool
-    require_restart: FrozenSet[str]
+    has_sideeffect: bool = True
+    require_restart: FrozenSet[str] = frozenset()
 
     @pydantic.dataclasses.dataclass()
     class Settings(BaseModel):
@@ -41,8 +35,8 @@ class Function(ABC):
             raise TypeError(f"Function {cls.__name__} must have a {msg}")
 
         try:
-            if not does_match(cls, "Settings", is_basemodel):
-                error("pydantic dataclass 'Settings'")
+            if not does_match(cls, "Settings", is_dataclass):
+                error("dataclass 'Settings'")
         except AttributeError:
             cls.Settings = Function.Settings
 
@@ -68,8 +62,8 @@ class Function(ABC):
 
         setting_names = [x.name for x in fields(cls.Settings)]
 
-        for field in setting_names:
-            if field not in cls.Settings:
+        for field in cls.require_restart:
+            if field not in setting_names:
                 error(f"field '{field}'")
 
     def __init__(self, settings):
