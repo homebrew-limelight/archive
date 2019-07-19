@@ -1,1 +1,1 @@
-# this could be a good/bad manager idk really know 
+google how do io wrtie =python code
