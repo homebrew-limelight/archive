@@ -59,7 +59,7 @@ class LiteGraphPipeline(Pipeline):
     def from_litegraph(cls, manager: Manager, litegraph: LiteGraph) -> "LiteGraphPipeline":
         pipeline = LiteGraphPipeline(manager)
         for node in litegraph.nodes:
-            pipeline.id_to_uuid[node.id] = pipeline.create_node_raw(node.type, node.properties)
+            pipeline.id_to_uuid[node.id] = pipeline.create_node(node.type, node.properties)
 
         for link in litegraph.links:
             output_node_uuid = pipeline.id_to_uuid[link.in_node]

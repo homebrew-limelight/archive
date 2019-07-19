@@ -34,10 +34,7 @@ BASIC_SUM = """{
                     "links": null
                 }
             ],
-            "properties": {
-                "num1": 0,
-                "num2": 0
-            }
+            "properties": {}
         },
         {
             "id": 1,

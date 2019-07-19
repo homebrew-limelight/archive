@@ -36,7 +36,7 @@ class Sum(Function):
 
     def __call__(self, inputs):
         out = inputs.num1 + inputs.num2
-
+        print(out)
         return self.Outputs(out=out)
 
 
