@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Homebrew LL</title>
+		<link rel="stylesheet" href="/static/css/style.css" />
+	</head>
+	<body>
+		<div id="nav">
+			<div id="nav-icon" class="nav-item">HBLL</div>
+			<div class="nav-item nav-active">settings</div>
+			<div class="nav-item">settings</div>
+			<div class="nav-item">settings</div>
+		</div>
+		<div id="content">
+			<h1>Settings</h1>
+			<h2>Setting Name</h2>
+			<input
+                id="slide"
+                class="slider"
+				type="range"
+				min="1"
+				max="100"
+				step="1"
+				value="10"
+				onchange="updateSlider(this.value)"
+			/>
+			<h3>Received Data:</h2>
+			<div id="response"></div>
+        </div>
+        <div id="output">Camera stream goes here</div>
+
+		<!--<script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>-->
+		<script type="text/javascript" src="/static/js/websockets.js"></script>
+		<script src="/static/js/main.js"></script>
+	</body>
+</html>

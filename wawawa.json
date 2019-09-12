@@ -1,0 +1,112 @@
+{
+    "last_node_id": 2,
+    "last_link_id": 1,
+    "nodes": [
+        {
+            "id": 2,
+            "type": "basic/watch",
+            "pos": [
+                738,
+                83.99995422363281
+            ],
+            "size": {
+                "0": 140,
+                "1": 26
+            },
+            "flags": {},
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "value",
+                    "type": 0,
+                    "link": 0,
+                    "label": "0.000"
+                }
+            ],
+            "properties": {}
+        },
+        {
+            "id": 1,
+            "type": "mine/NodeA",
+            "pos": [
+                374,
+                104
+            ],
+            "size": {
+                "0": 210,
+                "1": 166
+            },
+            "flags": {},
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "floatIn",
+                    "type": "number",
+                    "link": null
+                },
+                {
+                    "0": "a",
+                    "1": "s",
+                    "2": "d",
+                    "3": "f",
+                    "name": "strIn",
+                    "type": "string",
+                    "link": null
+                },
+                {
+                    "name": "matIn",
+                    "type": "mat",
+                    "link": null
+                },
+                {
+                    "name": "boolIn",
+                    "type": "bool",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "floatOut",
+                    "type": "number",
+                    "links": null
+                },
+                {
+                    "name": "strOut",
+                    "type": "string",
+                    "links": [
+                        0
+                    ]
+                },
+                {
+                    "name": "matOut",
+                    "type": "mat",
+                    "links": null
+                },
+                {
+                    "name": "boolOut",
+                    "type": "bool",
+                    "links": null
+                }
+            ],
+            "properties": {
+                "floatIn": 14.842105263157894,
+                "strIn": "asdf",
+                "boolIn": true
+            }
+        }
+    ],
+    "links": [
+        [
+            0,
+            1,
+            1,
+            2,
+            0,
+            
+            0
+        ]
+    ],
+    "groups": [],
+    "config": {},
+    "version": 0.4
+}
